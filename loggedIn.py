@@ -1,25 +1,25 @@
-from tkinter import *
+import tkinter as tk
 from tkinter.ttk import *
 import main
 import sys
 
 
-class MainView(Tk):
+class MainView(tk.Tk):
 
     def __init__(self, username):
-        Tk.__init__(self)
+        tk.Tk.__init__(self)
         window = Frame(self)
 
-        window.pack(side=TOP, fill=BOTH, expand=True)
+        window.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         window.grid_rowconfigure(0, weight=1)
         window.grid_columnconfigure(0, weight=1)
 
         # Defining the config within the master window
-        Tk.configure(self, bg="ivory2")
-        Tk.title(self, "Judo Databasing System")
-        Tk.option_add(self, '*Font', 'helvetica 14')
-        Tk.option_add(self, '*Background', 'ivory2')
-        Tk.geometry(self, '800x700+600+300')
+        tk.Tk.configure(self, bg="ivory2")
+        tk.Tk.title(self, "Judo Databasing System")
+        tk.Tk.option_add(self, '*Font', 'helvetica 14')
+        tk.Tk.option_add(self, '*Background', 'ivory2')
+        tk.Tk.geometry(self, '800x700+600+300')
         # End of defining the config within the master window
 
         # Setting up notebooks using tkinter.ttk
@@ -30,13 +30,14 @@ class MainView(Tk):
         tab1 = Frame(tabControl)
         tabControl.add(tab1, text='Main Page')
 
-        tab2 = Frame(tabControl)
-        tabControl.add(tab2, text='Register')
+        if username == 'admin':
+            tab2 = Frame(tabControl)
+            tabControl.add(tab2, text='Register')
 
         tab3 = Frame(tabControl)
         tabControl.add(tab3, text='Competitions')
 
-        tabControl.pack(expand=1, fill=BOTH)
+        tabControl.pack(expand=1, fill=tk.BOTH)
 
         getText = Label(tab1)
         getText.config(text=username)
