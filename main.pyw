@@ -46,6 +46,7 @@ class LoginWindow(Frame):
         else:
             self.wrongAnswer.config(fg='#E94949')
 
+    ### Initialisation script
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         frame = tk.Frame(self, bg='#EEEDEF')
@@ -148,7 +149,7 @@ class SignupWindow(Frame):
         lblIcon.image = image
         lblIcon.pack(side=tk.LEFT, padx=0, pady=10)
 
-        image = tk.PhotoImage(file='assets/login.png')
+        image = tk.PhotoImage(file='assets/signUp.png')
         lblIcon = tk.Label(frame, bg='#EEEDEF', relief='flat')
         lblIcon.config(image=image)
         lblIcon.image = image
