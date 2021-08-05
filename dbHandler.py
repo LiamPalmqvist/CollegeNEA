@@ -75,13 +75,14 @@ def main():
     con.commit()
 
     cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive)
-    values(0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', 07949296074, 328947239, '2021-12-24', '3rd Kyu', '2021-06-27', 1);''')
+    values  (0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', 07949296074, 328947239, '2021-12-24', '3rd Kyu', '2021-06-27', 1);''')
 
     cur.execute('''insert into tblAttendance (sessionid, sessiondate, member)
-    values(0, '2021-05-13', 0);''')
+    values  (0, '2021-05-13', 0);''')
 
     cur.execute('''insert into tblMember(memberID, username, email, password)
-    values(0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password');''')
+    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password'),
+            (1, 'admin', 'admin@admin.com', 'password');''')
     con.commit()
 
 

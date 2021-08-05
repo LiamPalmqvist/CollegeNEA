@@ -124,9 +124,12 @@ class SignupWindow(Frame):
         match = dbHandler.logIn(self.username.get(), self.email.get(), False)
         if not match:
             dbHandler.signUp(self.username.get(), self.email.get(), self.password.get())
-
-        self.wrongAnswer.config(fg='#E94949')
-        print(self.username.get(), self.email.get(), self.password.get())
+            self.wrongAnswer.config(fg='#77DD77', text='''Success!
+Please sign in!''')
+        else:
+            self.wrongAnswer.config(fg='#E94949', text='''The username or password you 
+entered has already been taken''')
+            print(self.username.get(), self.email.get(), self.password.get())
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -189,7 +192,7 @@ class SignupWindow(Frame):
 
         self.wrongAnswer = tk.Label(frame)
         self.wrongAnswer.config(text='''The username or password you 
-entered was incorrect''', fg='#EEEDEF', pady=10, font=('lmpRegular', 14))
+entered has already been taken''', fg='#EEEDEF', pady=10, font=('lmpRegular', 14))
         self.wrongAnswer.pack()
 
         spacer1 = Frame(frame)

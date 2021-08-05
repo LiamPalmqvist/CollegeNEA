@@ -1,7 +1,5 @@
 import tkinter as tk
 from tkinter.ttk import *
-import main
-import sys
 
 
 class MainView(tk.Tk):
