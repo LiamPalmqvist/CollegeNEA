@@ -122,15 +122,11 @@ def logIn(username, other, login):
 ### Signing up
 def signUp(username, email, password):
 
-    # Checking if default text fields have been removed
-    if (username, email, password) == ('username', 'e-mail', 'password'):
-        return
-
     users = getUsers()
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute('''insert into tblMember(memberID, username, email, password)
-        values('{}', '{}', '{}', '{}');'''.format((users[-1][-1] + 1), username, email, password))
+            values('{}', '{}', '{}', '{}');'''.format((users[-1][-1] + 1), username, email, password))
     # This formats the string using the parameters specified
     con.commit()
 

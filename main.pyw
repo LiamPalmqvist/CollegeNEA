@@ -121,15 +121,25 @@ entered was incorrect''', fg='#EEEDEF', pady=10, font=('lmpRegular', 14))
 class SignupWindow(Frame):
 
     def signUp(self):
-        match = dbHandler.logIn(self.username.get(), self.email.get(), False)
-        if not match:
-            dbHandler.signUp(self.username.get(), self.email.get(), self.password.get())
-            self.wrongAnswer.config(fg='#77DD77', text='''Success!
-Please sign in!''')
+
+        if self.username.get() == 'username' or self.password.get() == 'password' or self.email.get() == 'e-mail':
+
+            self.wrongAnswer.config(fg='#E94949', text='''Please enter all
+of the required information''')
+
         else:
-            self.wrongAnswer.config(fg='#E94949', text='''The username or password you 
+
+            match = dbHandler.logIn(self.username.get(), self.email.get(), False)
+            if not match:
+
+                dbHandler.signUp(self.username.get(), self.email.get(), self.password.get())
+                self.wrongAnswer.config(fg='#77DD77', text='''Success!
+Please sign in!''')
+            else:
+
+                self.wrongAnswer.config(fg='#E94949', text='''The username or password you 
 entered has already been taken''')
-            print(self.username.get(), self.email.get(), self.password.get())
+                print(self.username.get(), self.email.get(), self.password.get())
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
