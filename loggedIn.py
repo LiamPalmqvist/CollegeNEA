@@ -28,12 +28,16 @@ class MainView(tk.Tk):
         tab1 = Frame(tabControl)
         tabControl.add(tab1, text='Main Page')
 
-        if username == 'admin':
-            tab2 = Frame(tabControl)
-            tabControl.add(tab2, text='Register')
+        tab2 = Frame(tabControl)
+        tabControl.add(tab2, text='Competitions')
 
-        tab3 = Frame(tabControl)
-        tabControl.add(tab3, text='Competitions')
+        if username == 'admin':
+            tab3 = Frame(tabControl)
+            tabControl.add(tab3, text='Register')
+
+        tab4 = Frame(tabControl)
+        tabControl.add(tab4, text='Profile')
+        tabControl.config()
 
         tabControl.pack(expand=1, fill=tk.BOTH)
 
@@ -43,11 +47,11 @@ class MainView(tk.Tk):
 
 
 def run(username):
-    loginSuccess = MainView(username)
-    loginSuccess.iconbitmap('assets/logographic.ico')
-    loginSuccess.mainloop()
+    app = MainView(username)
+    app.iconbitmap('assets/logographic.ico')
+    app.mainloop()
 
 
 if __name__ == '__main__':
-    loginSuccess = MainView("LiamPalmqvist")
-    loginSuccess.mainloop()
+    app = MainView("admin")
+    app.mainloop()

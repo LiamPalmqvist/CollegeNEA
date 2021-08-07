@@ -18,6 +18,7 @@ class MainWindow(tk.Tk):
         # Defining the config within the master window
         tk.Tk.title(self, "Judo Databasing System")
         tk.Tk.option_add(self, '*Font', 'helvetica 20')
+        self.resizable(False, False)
         tk.Tk.geometry(self, '350x550+600+300')
         # End of defining the config within the master window
 
@@ -63,7 +64,7 @@ class LoginWindow(Frame):
         lblIcon.image = image
         lblIcon.pack(side=tk.LEFT, padx=10, pady=10)
 
-        image = tk.PhotoImage(file='assets/keisenJudo (Custom).png')
+        image = tk.PhotoImage(file='assets/keisenJudoClub (Custom).png')
         lblIcon = tk.Label(topFrame, bg='#E0D8DA', relief='flat')
         lblIcon.config(image=image)
         lblIcon.image = image
@@ -156,7 +157,7 @@ entered has already been taken''')
         lblIcon.image = image
         lblIcon.pack(side=tk.LEFT, padx=10, pady=10)
 
-        image = tk.PhotoImage(file='assets/keisenJudo (Custom).png')
+        image = tk.PhotoImage(file='assets/keisenJudoClub (Custom).png')
         lblIcon = tk.Label(topFrame, bg='#E0D8DA', relief='flat')
         lblIcon.config(image=image)
         lblIcon.image = image
