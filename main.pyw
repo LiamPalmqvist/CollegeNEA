@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter.ttk import *
 import dbHandler
 import loggedIn
-from custom import EntryWithPlaceholder
+from custom import EntryWithPlaceholder, EntryWithPassword
 
 
 class MainWindow(tk.Tk):
@@ -29,9 +29,9 @@ class MainWindow(tk.Tk):
             self.frames[i] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(LoginWindow)
+        self.showFrame(LoginWindow)
 
-    def show_frame(self, cont):
+    def showFrame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -44,6 +44,7 @@ class LoginWindow(Frame):
         print(match)
         if match:
             loggedIn.run(self.username.get())
+            app.quit()
         else:
             self.wrongAnswer.config(fg='#E94949')
 
@@ -89,7 +90,7 @@ class LoginWindow(Frame):
         placeholder.config(text="placeholder", fg='#EEEDEF', font='helvetica 10')
         placeholder.grid(row=1, column=1)
 
-        self.password = EntryWithPlaceholder(frame1, 'password')
+        self.password = EntryWithPassword(frame1, 'password')
         self.password.grid(row=2, column=1)
 
         # Logging in
@@ -107,7 +108,7 @@ class LoginWindow(Frame):
 
         # Switching Button
         switchButton = tk.Button(frame)
-        switchButton.config(text="SIGN UP", command=lambda: controller.show_frame(SignupWindow), width=18, bg='#E94949', fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
+        switchButton.config(text="SIGN UP", command=lambda: controller.showFrame(SignupWindow), width=18, bg='#E94949', fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
         switchButton.pack()
 
         self.wrongAnswer = tk.Label(frame)
@@ -179,7 +180,7 @@ entered has already been taken''')
         self.email = EntryWithPlaceholder(frame1, 'e-mail')
         self.email.grid(row=1, column=0)
 
-        self.password = EntryWithPlaceholder(frame1, 'password')
+        self.password = EntryWithPassword(frame1, 'password')
         self.password.grid(row=2, column=0)
 
         placeholder = tk.Label(frame)
@@ -197,7 +198,7 @@ entered has already been taken''')
 
         # Switching Button
         switchButton = tk.Button(frame)
-        switchButton.config(text="LOG IN", command=lambda: controller.show_frame(LoginWindow), width=18, bg='#E94949',
+        switchButton.config(text="LOG IN", command=lambda: controller.showFrame(LoginWindow), width=18, bg='#E94949',
                             fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
         switchButton.pack()
 
