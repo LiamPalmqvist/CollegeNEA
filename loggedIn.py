@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter.ttk import *
 
+import dbHandler
+
 
 class MainView(tk.Tk):
 
@@ -31,7 +33,8 @@ class MainView(tk.Tk):
         tab2 = Frame(tabControl)
         tabControl.add(tab2, text='Competitions')
 
-        if username == 'admin':
+        user = dbHandler.getSingleUser(username)
+        if user[-1] == 1:
             tab3 = Frame(tabControl)
             tabControl.add(tab3, text='Register')
 

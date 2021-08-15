@@ -60,7 +60,8 @@ def main():
     username      VARCHAR (20),
     email         VARCHAR (30),
     password      VARCHAR (20),
-    listOfJudokas VARCHAR (255) 
+    listOfJudokas VARCHAR (255),
+    isAdmin       INTEGER       NOT NULL
 );''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS tblComp (
@@ -80,9 +81,9 @@ def main():
     cur.execute('''insert into tblAttendance (sessionid, sessiondate, member)
     values  (0, '2021-05-13', 0);''')
 
-    cur.execute('''insert into tblMember(memberID, username, email, password)
-    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password'),
-            (1, 'admin', 'admin@admin.com', 'password');''')
+    cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin)
+    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password', 1),
+            (1, 'admin', 'admin@admin.com', 'password', 1);''')
     con.commit()
 
 
@@ -90,15 +91,24 @@ def main():
 def getUsers() -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('SELECT username, email, password, memberID FROM tblMember')
+    cur.execute('SELECT username, email, password, memberID, isAdmin FROM tblMember')
     users = cur.fetchall()
 
     return users
 
 
+def getSingleUser(username) -> list:
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute("SELECT username, email, password, memberID, isAdmin FROM tblMember WHERE username = '{}'".format(username))
+    user = cur.fetchone()
+
+    return user
+
+
 ### Setting checks to make sure username and password are or aren't taken
 # Logging in with a username and password
-def logIn(username, other, login):
+def logIn(username, other, login) -> bool:
 
     if (username, other) == ('username', 'password'):
         return
@@ -125,8 +135,8 @@ def signUp(username, email, password):
     users = getUsers()
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('''insert into tblMember(memberID, username, email, password)
-            values('{}', '{}', '{}', '{}');'''.format((users[-1][-1] + 1), username, email, password))
+    cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin)
+            values('{}', '{}', '{}', '{}', 0);'''.format((users[-1][-1] + 1), username, email, password))
     # This formats the string using the parameters specified
     con.commit()
 
