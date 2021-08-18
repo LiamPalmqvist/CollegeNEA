@@ -8,7 +8,7 @@ from custom import EntryWithPlaceholder, EntryWithPassword
 class MainWindow(tk.Tk):
 
     def __init__(self):
-        tk.Tk.__init__(self)
+        super().__init__()
         window = Frame(self)
 
         window.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -16,7 +16,7 @@ class MainWindow(tk.Tk):
         window.grid_columnconfigure(0, weight=1)
 
         # Defining the config within the master window
-        tk.Tk.title(self, "Judo Databasing System")
+        tk.Tk.title(self, "JDS")
         tk.Tk.option_add(self, '*Font', 'helvetica 20')
         self.resizable(False, False)
         tk.Tk.geometry(self, '350x550+600+300')
@@ -40,12 +40,18 @@ class LoginWindow(Frame):
 
     ### Checking if login matches any logins in the sqlite db
     def loginAttempt(self):
-        match = dbHandler.logIn(self.username.get(), self.password.get(), True)
-        print(match)
-        if match:
-            loggedIn.run(self.username.get())
-            app.quit()
-        else:
+        user = dbHandler.getSingleUser(self.username.get()) # Gets user from db
+        print(user)
+
+        try: # Tries to log in by matching username and password
+            if user[2] == self.password.get():
+                loggedIn.run(self.username.get())
+                app.quit()
+
+            else: # If no error and password doesn't match
+                self.wrongAnswer.config(fg='#E94949')
+
+        except TypeError: # Waits for error from a blank login
             self.wrongAnswer.config(fg='#E94949')
 
     ### Initialisation script
