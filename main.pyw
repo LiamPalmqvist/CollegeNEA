@@ -46,7 +46,6 @@ class LoginWindow(Frame):
         try: # Tries to log in by matching username and password
             if user[2] == self.password.get():
                 loggedIn.run(self.username.get())
-                app.quit()
 
             else: # If no error and password doesn't match
                 self.wrongAnswer.config(fg='#E94949')

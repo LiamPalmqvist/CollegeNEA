@@ -1,6 +1,6 @@
 import sqlite3
-import tkinter
-from PIL import ImageTk, Image
+
+import loggedIn
 
 db = 'databaseJudoka.db'
 
@@ -89,9 +89,9 @@ def main():
     values  (0, '2021-05-13', 0);''')
 
     cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
-    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password', 1, 'default.png'),
-            (1, 'admin', 'admin@admin.com', 'password', 1, 'default.png'),
-            (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'default.png');''')
+    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password', 1, 'LiamPalmqvist.png'),
+            (1, 'admin', 'admin@admin.com', 'password', 1, 'admin.png'),
+            (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'nonAdmin.png');''')
     con.commit()
 
 
@@ -144,15 +144,11 @@ def signUp(username, email, password):
     users = getUsers()
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin)
-            values('{}', '{}', '{}', '{}', 0, 'default.png');'''.format((users[-1][-3] + 1), username, email, password))
+    cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
+            values('{}', '{}', '{}', '{}', 0, '{}');'''.format((users[-1][-3] + 1), username, email, password, username+'.png'))
     # This formats the string using the parameters specified
     con.commit()
-
-
-### Saving images
-def saveImage(image, username):
-    return
+    loggedIn.saveImage(username, True)
 
 
 # Running if __name__ == __main__

@@ -56,4 +56,3 @@ class EntryWithPassword(tk.Entry):
         if not self.get():
             self.put_placeholder()
             self.config(show='')
-

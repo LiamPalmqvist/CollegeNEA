@@ -1,7 +1,34 @@
 import tkinter as tk
 from tkinter.ttk import *
+from tkinter.filedialog import *
+from PIL import Image, ImageTk
 import dbHandler
-import custom
+
+
+def saveImage(username, newUser):
+
+    if newUser:
+        filename = 'assets/pfps/default.png'
+    else:
+        filename = askopenfilename()
+
+    im = Image.open(filename)
+    im = im.resize((100, 100), Image.ANTIALIAS)
+    im.save('assets/pfps/' + username + '.png', "PNG")
+
+
+def updateImage(self, username):
+
+    filename = askopenfilename()
+
+    im = Image.open(filename)
+    im = im.resize((100, 100), Image.ANTIALIAS)
+    im.save('assets/pfps/' + username + '.png', "PNG")
+    im = ImageTk.PhotoImage(image=im)
+
+    for i in self:
+        i.config(image=im)
+        i.image = im
 
 
 class MainView(tk.Toplevel):
@@ -62,7 +89,7 @@ class MainView(tk.Toplevel):
         lblIcon.pack(side=tk.LEFT, padx=10, pady=10)
 
         lblWelcome = tk.Label(tab1Frame1)
-        lblWelcome.config(text="Welcome, "+username, font='Helvetica 30', bg='#E0D8DA')
+        lblWelcome.config(text="Welcome, " + username, font='Helvetica 30', bg='#E0D8DA')
         lblWelcome.pack(side=tk.LEFT)
 
         ### Setting up the Competitions Page
@@ -94,17 +121,22 @@ class MainView(tk.Toplevel):
         tab3Frame2.pack(expand=1, fill=tk.X, anchor=tk.N)
 
         image = tk.PhotoImage(file='assets/pfps/' + user[-1])
-        lblIcon = tk.Label(tab3Frame2, bg='#E0D8DA', relief='flat')
-        lblIcon.config(image=image)
-        lblIcon.image = image
-        lblIcon.pack(side=tk.LEFT, padx=10, pady=10)
+        userSettingsIcon = tk.Label(tab3Frame2, bg='#E0D8DA', relief='flat')
+        userSettingsIcon.config(image=image)
+        userSettingsIcon.image = image
+        userSettingsIcon.pack(side=tk.LEFT, padx=10, pady=10)
+
+        imageButton = tk.Button(tab3Frame2)
+        imageButton.config(command=lambda: updateImage([lblIcon, userSettingsIcon], username))
+        imageButton.pack()
 
         ### Setting up the Register Page
 
-        # Main tab page to fill bg colour
-        tab4Fill = tk.Frame(tab4)
-        tab4Fill.config(bg='#E0D8DA')
-        tab4Fill.pack(expand=1, fill=tk.BOTH)
+        if user[-2] == 1:
+            # Main tab page to fill bg colour
+            tab4Fill = tk.Frame(tab4)
+            tab4Fill.config(bg='#E0D8DA')
+            tab4Fill.pack(expand=1, fill=tk.BOTH)
 
 
 def run(username):
