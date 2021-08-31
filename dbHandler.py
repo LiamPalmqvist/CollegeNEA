@@ -83,7 +83,7 @@ def main():
     con.commit()
 
     cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
-    values  (0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', 07949296074, 328947239, '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
+    values  (0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', '07949296074', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
 
     cur.execute('''insert into tblAttendance (sessionid, sessiondate, member)
     values  (0, '2021-05-13', 0);''')
@@ -93,6 +93,8 @@ def main():
             (1, 'admin', 'admin@admin.com', 'password', 1, 'admin.png'),
             (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'nonAdmin.png');''')
     con.commit()
+
+    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '324576890', '2023-12-24', '2nd Mon', '2020-12-22', 1, 'admin')
 
 
 ### Getting the users and outputting a list
@@ -110,10 +112,31 @@ def getSingleUser(username) -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(
-        "SELECT username, email, password, memberID, isAdmin, profilePhoto FROM tblMember WHERE username = '{}'".format(username))
+        "SELECT username, email, password, memberID, isAdmin, profilePhoto FROM tblMember WHERE username = '{}'".format(
+            username))
     user = cur.fetchone()
 
     return user
+
+
+### Getting a single user's id
+def getUserId(username) -> int:
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute("SELECT memberID from tblMember WHERE username = '{}'".format(username))
+    number = cur.fetchone()
+    number = number[0]
+
+    return number
+
+
+def getMembers() -> list:
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute('SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo FROM tblJudoka')
+    users = cur.fetchall()
+
+    return users
 
 
 ### Setting checks to make sure username and password are or aren't taken
@@ -145,10 +168,22 @@ def signUp(username, email, password):
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
-            values('{}', '{}', '{}', '{}', 0, '{}');'''.format((users[-1][-3] + 1), username, email, password, username+'.png'))
+    values('{}', '{}', '{}', '{}', 0, '{}');'''.format((users[-1][-3] + 1), username, email, password,
+                                                       username + '.png'))
     # This formats the string using the parameters specified
     con.commit()
     loggedIn.saveImage(username, True)
+
+
+def signUpJudoka(name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, username):
+    members = getMembers()
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
+    values('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');'''.format(members[-1][0] + 1, name, address, memphonenum,
+                                                                                  licnum, expdate, grade, lastgraddate,
+                                                                                  directdebactive, getUserId(username)))
+    con.commit()
 
 
 # Running if __name__ == __main__
