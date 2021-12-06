@@ -1,5 +1,4 @@
 import sqlite3
-
 import loggedIn
 
 db = 'databaseJudoka.db'
@@ -14,7 +13,7 @@ def main():
     cur.execute('DROP TABLE IF EXISTS tblJudoka')
     cur.execute('DROP TABLE IF EXISTS tblAttendance')
     cur.execute('DROP TABLE IF EXISTS tblMember')
-    cur.execute('DROP TABLE IF EXISTS tblComp')
+    cur.execute('DROP TABLE IF EXISTS lnkMemAtt')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS tblJudoka (
     memberID           INTEGER      PRIMARY KEY
@@ -23,9 +22,9 @@ def main():
     name               VARCHAR (30) NOT NULL,
     address            VARCHAR (50) NOT NULL,
     pgName             VARCHAR (30),
-    memPhoneNum        VARCHAR (10) UNIQUE,
-    pgPhoneNum1        VARCHAR (10) UNIQUE,
-    pgPhoneNum2        VARCHAR (10) UNIQUE,
+    memPhoneNum        VARCHAR (10), 
+    pgPhoneNum1        VARCHAR (10), 
+    pgPhoneNum2        VARCHAR (10), 
     licNum             VARCHAR (30) UNIQUE
                                     NOT NULL,
     expDate            DATE         CONSTRAINT [dd-MM-yy] NOT NULL,
@@ -41,7 +40,7 @@ def main():
     emContact2Rel      VARCHAR (30),
     emCOntact2Num      VARCHAR (10),
     emCOntact2LandLine VARCHAR (20),
-    belongsTo          INT,
+    belongsTo          INTEGER      NOT NULL,
     FOREIGN KEY (
         belongsTo
     )
@@ -52,31 +51,32 @@ def main():
     sessionID   INTEGER NOT NULL
                         PRIMARY KEY
                         UNIQUE,
-    sessionDate DATE    NOT NULL,
-    member      INT,
-    FOREIGN KEY (
-        member
-    )
-    REFERENCES tblJudoka (memberid) 
+    sessionDate DATE    NOT NULL
 );''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS tblMember (
     memberID      INTEGER       NOT NULL
                                 PRIMARY KEY
                                 UNIQUE,
-    username      VARCHAR (20),
-    email         VARCHAR (30),
+    username      VARCHAR (20)  UNIQUE,
+    email         VARCHAR (30)  UNIQUE,
     password      VARCHAR (20),
     isAdmin       INTEGER       NOT NULL,
-    profilePhoto  VARCHAR (20)
+    profilePhoto  VARCHAR (25)
 );''')
 
-    cur.execute('''CREATE TABLE IF NOT EXISTS tblComp (
-    compID        INTEGER       NOT NULL
-                                PRIMARY KEY AUTOINCREMENT
-                                UNIQUE,
-    compDate      DATE          NOT NULL,
-    listOfJudokas VARCHAR (255) 
+    cur.execute('''CREATE TABLE IF NOT EXISTS lnkMemAtt (
+    memberID       INTEGER,
+    sessionID      INTEGER,
+    FOREIGN KEY (
+        memberID
+    )
+    REFERENCES tblJudoka (memberid),
+    FOREIGN KEY (
+        sessionID
+    )
+    REFERENCES tblAttendance (sessionid),
+    PRIMARY KEY (memberID, sessionID)
 );
 ''')
 
@@ -85,16 +85,40 @@ def main():
     cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
     values  (0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', '07949296074', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
 
-    cur.execute('''insert into tblAttendance (sessionid, sessiondate, member)
-    values  (0, '2021-05-13', 0);''')
+    cur.execute('''insert into tblAttendance (sessionid, sessiondate)
+    values  (0, '2021-05-13');''')
 
     cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
     values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password', 1, 'LiamPalmqvist.png'),
             (1, 'admin', 'admin@admin.com', 'password', 1, 'admin.png'),
             (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'nonAdmin.png');''')
+
+    cur.execute('''insert into lnkMemAtt(memberID, sessionID)
+    values  (0, 0);''')
+
     con.commit()
 
-    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '324576890', '2023-12-24', '2nd Mon', '2020-12-22', 1, 'admin')
+    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '324576890', '2023-12-24', '2nd Mon',
+                 '2020-12-22', 1, 'admin')
+
+    cur.execute('SELECT * FROM tblMember')
+    members = cur.fetchall()
+
+    cur.execute('SELECT * FROM tblJudoka')
+    judoka = cur.fetchall()
+
+    cur.execute('SELECT * FROM tblAttendance')
+    attendance = cur.fetchall()
+
+    cur.execute('SELECT * FROM lnkMemAtt')
+    lnkMemAtt = cur.fetchall()
+
+    list1 = [members, judoka, attendance, lnkMemAtt]
+
+    for i in list1:
+        for n in i:
+            print(n)
+        print("\n")
 
 
 ### Getting the users and outputting a list
@@ -133,7 +157,10 @@ def getUserId(username) -> int:
 def getMembers() -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo FROM tblJudoka')
+    cur.execute(
+        'SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+         FROM tblJudoka'
+    )
     users = cur.fetchall()
 
     return users
@@ -167,8 +194,8 @@ def signUp(username, email, password):
     users = getUsers()
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
-    values('{}', '{}', '{}', '{}', 0, '{}');'''.format((users[-1][-3] + 1), username, email, password,
+    cur.execute('''INSERT INTO tblMember(memberID, username, email, password, isAdmin, profilePhoto)
+    VALUES('{}', '{}', '{}', '{}', 0, '{}');'''.format((users[-1][-3] + 1), username, email, password,
                                                        username + '.png'))
     # This formats the string using the parameters specified
     con.commit()
@@ -180,9 +207,21 @@ def signUpJudoka(name, address, memphonenum, licnum, expdate, grade, lastgraddat
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
-    values('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');'''.format(members[-1][0] + 1, name, address, memphonenum,
+    values('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');'''.format(members[-1][0] + 1, name, address,
+                                                                                  memphonenum,
                                                                                   licnum, expdate, grade, lastgraddate,
                                                                                   directdebactive, getUserId(username)))
+    con.commit()
+
+
+def updatePassword(username, newpassword):
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute('''UPDATE tblMember
+    SET password = '{}'
+    WHERE username = '{}';
+    '''.format(newpassword, username))
+
     con.commit()
 
 

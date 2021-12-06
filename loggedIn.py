@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter.ttk import *
 from tkinter.filedialog import *
 from PIL import Image, ImageTk
+
+import custom
 import dbHandler
 
 
 def saveImage(username, newUser):
-
     if newUser:
         filename = 'assets/pfps/default.png'
     else:
@@ -18,7 +19,6 @@ def saveImage(username, newUser):
 
 
 def updateImage(self, username):
-
     filename = askopenfilename()
 
     im = Image.open(filename)
@@ -33,7 +33,19 @@ def updateImage(self, username):
 
 class MainView(tk.Toplevel):
 
+    def updatePassword(self, username):
+        if self.pwd.get() == dbHandler.getSingleUser(username)[2]:
+            if self.newPwd.get() != self.confPwd.get():
+
+                self.pwdReport.config(text="New passwords do not match", fg='#E94949')
+            else:
+                self.pwdReport.config(text="Success, password changed!", fg='#77DD77')
+        else:
+            print(False, "Old password does not match")
+            self.pwdReport.config(text="Old password does not match", fg='#E94949')
+
     def __init__(self, username):
+        userInfo = dbHandler.getSingleUser(username)
         super().__init__()
         window = Frame(self)
 
@@ -109,26 +121,62 @@ class MainView(tk.Toplevel):
         # Frame 1
         tab3Frame1 = tk.Frame(tab3Fill)
         tab3Frame1.config(bg='#E0D8DA')
-        tab3Frame1.pack(expand=1, fill=tk.X, anchor=tk.N)
+        tab3Frame1.pack(expand=1, fill=tk.BOTH)
 
         lblWelcome = tk.Label(tab3Frame1)
         lblWelcome.config(text="Edit profile", font='Helvetica 30', bg='#E0D8DA')
-        lblWelcome.pack(side=tk.LEFT)
+        lblWelcome.place(x=20, y=20)
 
-        # Frame 2
-        tab3Frame2 = tk.Frame(tab3Fill)
-        tab3Frame2.config(bg='#E0D8DA')
-        tab3Frame2.pack(expand=1, fill=tk.X, anchor=tk.N)
+        # The profile photo section
 
         image = tk.PhotoImage(file='assets/pfps/' + user[-1])
-        userSettingsIcon = tk.Label(tab3Frame2, bg='#E0D8DA', relief='flat')
+        userSettingsIcon = tk.Label(tab3Frame1, bg='#E0D8DA', relief='flat')
         userSettingsIcon.config(image=image)
         userSettingsIcon.image = image
-        userSettingsIcon.pack(side=tk.LEFT, padx=10, pady=10)
+        userSettingsIcon.place(x=58, y=90)
 
-        imageButton = tk.Button(tab3Frame2)
-        imageButton.config(command=lambda: updateImage([lblIcon, userSettingsIcon], username))
-        imageButton.pack()
+        imageButton = Button(tab3Frame1)
+        imageButton.config(text="Upload image", command=lambda: updateImage([lblIcon, userSettingsIcon], username))
+        imageButton.place(x=68, y=200)
+
+        # The username/password section
+
+        lblUsername = tk.Label(tab3Frame1)
+        lblUsername.config(text="Username:", bg='#E0D8DA', relief='flat')
+        lblUsername.place(x=200, y=100)
+
+        lblCurUsr = tk.Label(tab3Frame1)
+        lblCurUsr.config(text=userInfo[0], bg='#E0D8DA', relief='flat')
+        lblCurUsr.place(x=300, y=100)
+
+        lblEmail = tk.Label(tab3Frame1)
+        lblEmail.config(text="E-Mail:", bg='#E0D8DA', relief='flat')
+        lblEmail.place(x=200, y=140)
+
+        lblCurMail = tk.Label(tab3Frame1)
+        lblCurMail.config(text=userInfo[1], bg='#E0D8DA', relief='flat')
+        lblCurMail.place(x=300, y=140)
+
+        lblEditPwd = tk.Label(tab3Frame1)
+        lblEditPwd.config(text="Edit Password", font='Helvetica 30', bg='#E0D8DA', relief='flat')
+        lblEditPwd.place(x=20, y=250)
+
+        self.pwd = custom.EntryWithPassword(tab3Frame1, 'Current Password')
+        self.pwd.place(x=30, y=310)
+
+        self.newPwd = custom.EntryWithPassword(tab3Frame1, 'New Password')
+        self.newPwd.place(x=30, y=350)
+
+        self.confPwd = custom.EntryWithPassword(tab3Frame1, 'Confirm Password')
+        self.confPwd.place(x=30, y=390)
+
+        changePwd = Button(tab3Frame1)
+        changePwd.config(text="Change", command=lambda: self.updatePassword(username))
+        changePwd.place(x=30, y=440)
+
+        self.pwdReport = tk.Label(tab3Frame1)
+        self.pwdReport.config(text='', font='Helvetica 30', bg='#E0D8DA', fg='#E0D8DA')
+        self.pwdReport.place(x=30, y=490)
 
         ### Setting up the Register Page
 

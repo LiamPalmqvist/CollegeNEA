@@ -40,17 +40,17 @@ class LoginWindow(Frame):
 
     ### Checking if login matches any logins in the sqlite db
     def loginAttempt(self):
-        user = dbHandler.getSingleUser(self.username.get()) # Gets user from db
+        user = dbHandler.getSingleUser(self.username.get())  # Gets user from db
         print(user)
 
-        try: # Tries to log in by matching username and password
+        try:  # Tries to log in by matching username and password
             if user[2] == self.password.get():
                 loggedIn.run(self.username.get())
 
-            else: # If no error and password doesn't match
+            else:  # If no error and password doesn't match
                 self.wrongAnswer.config(fg='#E94949')
 
-        except TypeError: # Waits for error from a blank login
+        except TypeError:  # Waits for error from a blank login
             self.wrongAnswer.config(fg='#E94949')
 
     ### Initialisation script
@@ -104,7 +104,8 @@ class LoginWindow(Frame):
         placeholder.pack()
 
         login = tk.Button(frame)
-        login.config(text="ENTER", command=lambda: self.loginAttempt(), width=18, bg='#E94949', fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
+        login.config(text="ENTER", command=lambda: self.loginAttempt(), width=18, bg='#E94949', fg='#EEEDEF',
+                     font='helvetica 20', relief=tk.FLAT)
         login.pack()
 
         placeholder = tk.Label(frame)
@@ -113,7 +114,8 @@ class LoginWindow(Frame):
 
         # Switching Button
         switchButton = tk.Button(frame)
-        switchButton.config(text="SIGN UP", command=lambda: controller.showFrame(SignupWindow), width=18, bg='#E94949', fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
+        switchButton.config(text="SIGN UP", command=lambda: controller.showFrame(SignupWindow), width=18, bg='#E94949',
+                            fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
         switchButton.pack()
 
         self.wrongAnswer = tk.Label(frame)
@@ -135,7 +137,6 @@ class SignupWindow(Frame):
 of the required information''')
 
         else:
-
             match = dbHandler.logIn(self.username.get(), self.email.get(), False)
             if not match:
 
@@ -144,7 +145,7 @@ of the required information''')
 Please sign in!''')
             else:
 
-                self.wrongAnswer.config(fg='#E94949', text='''The username or password you 
+                self.wrongAnswer.config(fg='#E94949', text='''The username or e-mail you 
 entered has already been taken''')
                 print(self.username.get(), self.email.get(), self.password.get())
 
