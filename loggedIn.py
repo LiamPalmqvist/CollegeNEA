@@ -127,10 +127,10 @@ class JudokaFrame(Frame):
                                                                                                    'grading']
 
         buttonFrame = tk.Frame(frame)
-        buttonFrame.config(height=500)
+        buttonFrame.config(height=700)
         buttonFrame.pack(expand=True, side=tk.BOTTOM, fill=tk.BOTH)
         judokaDisp = tk.Frame(frame)
-        judokaDisp.pack(expand=True, fill=tk.BOTH)
+        judokaDisp.pack(expand=True, fill=tk.X)
 
         for i in range(len(listLabels)):
             label = tk.Label(judokaDisp)
@@ -140,10 +140,10 @@ class JudokaFrame(Frame):
             label.grid(row=1, column=i)
 
         for i in range(len(judokas)):
-            for f in range(len(judokas[i])-3):
+            for f in range(len(judokas[i]) - 3):
                 label = tk.Label(judokaDisp)
-                label.config(text=judokas[i][f+1], wraplength=150, justify='center', bg='#E0D8DA')
-                label.grid(row=i+2, column=f)
+                label.config(text=judokas[i][f + 1], wraplength=150, justify='center', bg='#E0D8DA')
+                label.grid(row=i + 2, column=f)
         print(judokas)
 
         # Switching Button
@@ -208,7 +208,8 @@ class ProfileFrame(tk.Frame):
         userSettingsIcon.place(x=58, y=90)
 
         self.updTxtLbl = tk.Label(tab3Frame1)
-        self.updTxtLbl.config(text="Changes will only take effect after application restart", fg='#E0D8DA', bg='#E0D8DA')
+        self.updTxtLbl.config(text="Changes will only take effect after application restart", fg='#E0D8DA',
+                              bg='#E0D8DA')
         self.updTxtLbl.place(x=20, y=225)
 
         imageButton = Button(tab3Frame1)
@@ -256,7 +257,8 @@ class ProfileFrame(tk.Frame):
 
         # Switching Button
         switchButton = tk.Button(frame)
-        switchButton.config(text="EDIT JUDOKA", command=lambda: controller.showFrame(JudokaFrame), width=18, bg='#E94949',
+        switchButton.config(text="EDIT JUDOKA", command=lambda: controller.showFrame(JudokaFrame), width=18,
+                            bg='#E94949',
                             fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
         switchButton.place(x=30, y=590)
 
