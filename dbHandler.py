@@ -158,9 +158,19 @@ def getMembers() -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(
-        'SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
-         FROM tblJudoka'
-    )
+        '''SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+         FROM tblJudoka''')
+    users = cur.fetchall()
+
+    return users
+
+
+def getJudoka(belongsTo) -> list:
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute(
+        '''SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+         FROM tblJudoka WHERE belongsTo = '{}' '''.format(belongsTo))
     users = cur.fetchall()
 
     return users

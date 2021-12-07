@@ -65,8 +65,8 @@ def sendMail(recieverEmail, subject, text, image):
 
 
 if __name__ == "__main__":  # This tests the program when run as a standalone
-    login = ""  # email to sign in with
-    password = ""  # Password for email
+    login = "test4collyers@gmail.com"  # email to sign in with
+    password = "Theswede02!"  # Password for email
 
-    sendMail("", "", "", None)
+    sendMail("liam.palmqvist@icloud.com", "Hello", "ur mom", "assets\logographic.png")
     # Enter your email address, header and message here (optional: add an image with filename and extension)
