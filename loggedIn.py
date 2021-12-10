@@ -23,6 +23,7 @@ class MainView(tk.Toplevel):
 
     def __init__(self, username):
         super().__init__()
+        super().iconbitmap('assets/logographic.ico')
         self.daemon = True
         window = Frame(self)
 
@@ -168,11 +169,13 @@ class ProfileFrame(tk.Frame):
         print("Changed")
 
     def updatePassword(self, username):
+        print(username)
         if self.pwd.get() == dbHandler.getSingleUser(username)[2]:
             if self.newPwd.get() != self.confPwd.get():
 
                 self.pwdReport.config(text="New passwords do not match", fg='#E94949')
             else:
+                dbHandler.updatePassword(username, self.newPwd.get())
                 self.pwdReport.config(text="Success, password changed!", fg='#77DD77')
         else:
             print(False, "Old password does not match")
@@ -265,11 +268,9 @@ class ProfileFrame(tk.Frame):
 
 def run(username):
     app = MainView(username)
-    app.iconbitmap('assets/logographic.ico')
     app.mainloop()
 
 
 if __name__ == '__main__':
     app = MainView("admin")
-    app.iconbitmap('assets/logographic.ico')
     app.mainloop()

@@ -8,8 +8,8 @@ from email.mime.text import MIMEText
 # These libraries will allow you to send emails with multiple parts and attatchments
 
 port = 465  # For SSL
-login = ""  # The email address you will be using to send the email. This needs to be a gmail account as the port used is for gmail
-password = ""  # This is the password to the account you will be using to send your email
+login = "test4collyers@gmail.com"  # The email address you will be using to send the email. This needs to be a gmail account as the port used is for gmail
+password = "test4collyers01!"  # This is the password to the account you will be using to send your email
 # WARNING #
 '''
 In order to send emails with a gmail account, you need to turn on "allow less secure apps" at https://myaccount.google.com/lesssecureapps

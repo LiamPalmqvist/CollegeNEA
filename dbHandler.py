@@ -1,5 +1,9 @@
 import sqlite3
 import loggedIn
+import string
+import secrets
+
+import mailSender
 
 db = 'databaseJudoka.db'
 
@@ -231,10 +235,41 @@ def updatePassword(username, newpassword):
     SET password = '{}'
     WHERE username = '{}';
     '''.format(newpassword, username))
-
     con.commit()
+    cur.execute("""SELECT * FROM tblMember WHERE username = '{}'""".format(username))
+    print(cur.fetchone())
+    print("Password changed!")
+
+
+def makePassword() -> string:
+    num = 10  # define the length of the string
+    # define the secrets.choice() method and pass the string.ascii_letters + string.digits as an parameters.
+    res = ''.join(secrets.choice(string.ascii_letters + string.digits) for x in range(num))
+    # Print the Secure string with the combination of letters, digits and punctuation
+    print("Secure random string is :" + str(res))
+    return str(res)
+
+
+def sendMail(email) -> bool:
+
+    newPass = makePassword()
+    print(newPass)
+
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute('''UPDATE tblMember
+    SET password = '{}'
+    WHERE email = '{}'
+    '''.format(newPass, email))
+    con.commit()
+
+    if mailSender.sendMail(email, newPass):
+        return True
+    else:
+        return False
 
 
 # Running if __name__ == __main__
 if __name__ == '__main__':
     main()
+    makePassword()
