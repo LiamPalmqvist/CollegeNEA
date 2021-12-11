@@ -234,7 +234,7 @@ class ForgotPassword(Frame):
         if dbHandler.sendMail(self.email.get()):
             self.confirm.config(fg='#77DD77')
         else:
-            self.confirm.config(fg='#EEEDEF', text="""Hmm, it looks like we don't have
+            self.confirm.config(fg='#E94949', text="""Hmm, it looks like we don't have
 this email address in our database,
 please try again or sign up.""")
 
