@@ -87,7 +87,8 @@ def main():
     con.commit()
 
     cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
-    values  (0, 'Liam', 'Little Foxes, Hermitage Lane, RH19 4DR', '07949296074', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
+    values  (0, 'Liam', 'Address', '01234567899', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0),
+            (1, 'Mia', 'Address', '01234567899', '123445678', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
 
     cur.execute('''insert into tblAttendance (sessionid, sessiondate)
     values  (0, '2021-05-13');''')
@@ -102,7 +103,7 @@ def main():
 
     con.commit()
 
-    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '324576890', '2023-12-24', '2nd Mon',
+    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '123456789', '2023-12-24', '2nd Mon',
                  '2020-12-22', 1, 'admin')
 
     cur.execute('SELECT * FROM tblMember')

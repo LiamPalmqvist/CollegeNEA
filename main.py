@@ -296,7 +296,7 @@ password''', font='helvetica 14')
 
         back = tk.Button(frame)
         back.config(text="BACK", command=lambda: controller.showFrame(LoginWindow), width=18, bg='#E94949',
-                            fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
+                    fg='#EEEDEF', font='helvetica 20', relief=tk.FLAT)
         back.pack()
 
         self.confirm = tk.Label(frame)
