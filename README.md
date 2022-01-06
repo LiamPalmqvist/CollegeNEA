@@ -5,3 +5,4 @@
 
 ### Required packages
 - Pillow
+- Faker
