@@ -3,6 +3,7 @@ from tkinter.ttk import *
 from tkinter.filedialog import *
 from tkinter.font import *
 from PIL import Image, ImageTk
+from tkcalendar import DateEntry
 
 import custom
 import dbHandler
@@ -36,7 +37,7 @@ class MainView(tk.Toplevel):
         tk.Tk.title(self, "JDS")
         tk.Tk.option_add(self, '*Font', 'helvetica 14')
         tk.Tk.option_add(self, '*Background', '#E0D8DA')
-        tk.Tk.geometry(self, '800x700+600+300')
+        tk.Tk.geometry(self, '920x700+600+300')
         # End of defining the config within the master window
 
         # Setting up notebooks using tkinter.ttk
@@ -54,11 +55,11 @@ class MainView(tk.Toplevel):
         tabControl.add(tab3, text='Profile')
 
         user = dbHandler.getSingleUser(username)
+        tab4 = custom.ScrollableFrame(tabControl) # Doing this outside the IF so if they can still be accessed even if not packed
+        tab4Fill = tk.Frame(tab4)
         if user[-2] == 1:
-            tab4 = Frame(tabControl)
             tabControl.add(tab4, text='Register')
             # Main tab page to fill bg colour
-            tab4Fill = tk.Frame(tab4)
             tab4Fill.config(bg='#E0D8DA')
             tab4Fill.pack(expand=1, fill=tk.BOTH)
 
@@ -102,7 +103,32 @@ class MainView(tk.Toplevel):
         tab2Fill.config(bg='#E0D8DA')
         tab2Fill.pack(expand=1, fill=tk.BOTH)
 
-    def showFrame(self, cont):
+        ### Setting up the register page
+
+        self.judoka = dbHandler.getJudoka(None)
+        # Adding the students
+        for i in range(len(self.judoka)):
+            Label(tab4.scrollable_frame, text=self.judoka[i][1]).grid(row=i+1, column=0)
+
+            self.judoka[i] = tk.IntVar()
+            l = tk.Checkbutton(tab4.scrollable_frame, variable=self.judoka[i])
+            l.grid(row=i+1, column=1)
+
+        button = Button(tab4.scrollable_frame, text='Check', command=lambda: self.getHere())
+        button.grid(row=0, column=3)
+
+        self.cal = DateEntry(tab4.scrollable_frame, width=12, bg='red', fg='white')
+        self.cal.grid(row=0, column=4)
+
+    def getHere(self) -> None:
+        hereList = []
+        judokas = dbHandler.getJudoka(None)
+        for i in range(len(self.judoka)):
+            hereList.append([judokas[i][0], self.judoka[i].get(), self.cal.get_date().strftime("%d-%m-%Y")])
+            dbHandler.updHere(hereList)
+        print(hereList)
+
+    def showFrame(self, cont) -> None:
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -124,7 +150,7 @@ class JudokaFrame(Frame):
 
         judokas = dbHandler.getJudoka(userID)
         print(judokas)
-        listLabels = ['Name', 'Address', 'Phone Number', 'Licence number', 'Expiry Date', 'Grade', 'Date of last '
+        listLabels = ['Name', 'Address', 'Postcode', 'Phone Number', 'Licence number', 'Expiry Date', 'Grade', 'Date of last '
                                                                                                    'grading']
 
         buttonFrame = tk.Frame(frame)
@@ -143,7 +169,7 @@ class JudokaFrame(Frame):
         for i in range(len(judokas)):
             for f in range(len(judokas[i]) - 3):
                 label = tk.Label(judokaDisp)
-                label.config(text=judokas[i][f + 1], wraplength=150, justify='center', bg='#E0D8DA')
+                label.config(text=judokas[i][f + 1], wraplength=120, justify='center', bg='#E0D8DA')
                 label.grid(row=i + 2, column=f)
         print(judokas)
 
@@ -267,10 +293,8 @@ class ProfileFrame(tk.Frame):
 
 
 def run(username):
-    app = MainView(username)
-    app.mainloop()
+    app = MainView(username).mainloop()
 
 
 if __name__ == '__main__':
-    app = MainView("admin")
-    app.mainloop()
+    app = MainView("admin").mainloop()

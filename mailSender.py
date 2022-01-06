@@ -53,4 +53,4 @@ def sendMail(recieverEmail, usrPass):
 
 
 if __name__ == "__main__":
-    sendMail("noone", "Hello")
+    sendMail("liam.palmqvist@icloud.com", "Hello")

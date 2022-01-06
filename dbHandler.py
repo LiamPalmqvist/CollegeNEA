@@ -2,6 +2,8 @@ import sqlite3
 import loggedIn
 import string
 import secrets
+from faker import Faker
+import random
 
 import mailSender
 
@@ -25,6 +27,7 @@ def main():
                                     NOT NULL,
     name               VARCHAR (30) NOT NULL,
     address            VARCHAR (50) NOT NULL,
+    postcode           VARCHAR (7)  NOT NULL,
     pgName             VARCHAR (30),
     memPhoneNum        VARCHAR (10), 
     pgPhoneNum1        VARCHAR (10), 
@@ -70,8 +73,9 @@ def main():
 );''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS lnkMemAtt (
-    memberID       INTEGER,
-    sessionID      INTEGER,
+    memberID       INTEGER      NOT NULL,
+    present        INTEGER      NOT NULL,
+    sessionID      INTEGER      NOT NULL,
     FOREIGN KEY (
         memberID
     )
@@ -86,9 +90,10 @@ def main():
 
     con.commit()
 
-    cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
-    values  (0, 'Liam', 'Address', '01234567899', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0),
-            (1, 'Mia', 'Address', '01234567899', '123445678', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
+    cur.execute('''insert into tblJudoka(memberID, name, address, postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
+    values  (0, 'Liam', 'Very Long Address', 'Postcode', '01234567899', '328947239', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0),
+            (1, 'Mia', 'Long Address', 'Postcode', '01234567899', '123445678', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0),
+            (2, 'Very Long Name', 'Very Long Address', 'Postcode', '01234567899', '123455678', '2021-12-24', '3rd Kyu', '2021-06-27', 1, 0);''')
 
     cur.execute('''insert into tblAttendance (sessionid, sessiondate)
     values  (0, '2021-05-13');''')
@@ -98,13 +103,19 @@ def main():
             (1, 'admin', 'admin@admin.com', 'password', 1, 'admin.png'),
             (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'nonAdmin.png');''')
 
-    cur.execute('''insert into lnkMemAtt(memberID, sessionID)
-    values  (0, 0);''')
+    cur.execute('''insert into lnkMemAtt(memberID, present, sessionID)
+    values  (0, 0, 12-3-2000);''')
 
     con.commit()
 
-    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane, RH19 4DR', '07507299554', '123456789', '2023-12-24', '2nd Mon',
+    signUpJudoka('Mia', 'Little Foxes, Hermitage Lane', 'RH19 4DR', '07507299554', '123456789', '2023-12-24', '2nd Mon',
                  '2020-12-22', 1, 'admin')
+
+    fake = Faker(['en_GB', 'ja_JP'])
+    for i in range(20):
+        ran = ''.join(random.choices(string.digits, k=11))
+        ran2 = ''.join(random.choices(string.digits, k=9))
+        signUpJudoka(fake.name(), fake.address(), 'RH12 3BB', str(ran), str(ran2), fake.date(), '1st mon', fake.date(), random.randint(0, 1), 'admin')
 
     cur.execute('SELECT * FROM tblMember')
     members = cur.fetchall()
@@ -163,7 +174,7 @@ def getMembers() -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(
-        '''SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+        '''SELECT memberID, name, address postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
          FROM tblJudoka''')
     users = cur.fetchall()
 
@@ -173,9 +184,14 @@ def getMembers() -> list:
 def getJudoka(belongsTo) -> list:
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute(
-        '''SELECT memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
-         FROM tblJudoka WHERE belongsTo = '{}' '''.format(belongsTo))
+    if belongsTo is not None:
+        cur.execute(
+            '''SELECT memberID, name, address, postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+             FROM tblJudoka WHERE belongsTo = '{}' '''.format(belongsTo))
+    else:
+        cur.execute(
+            '''SELECT memberID, name, address, postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo\
+             FROM tblJudoka''')
     users = cur.fetchall()
 
     return users
@@ -217,15 +233,18 @@ def signUp(username, email, password):
     loggedIn.saveImage(username, True)
 
 
-def signUpJudoka(name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, username):
+def signUpJudoka(name, address, postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, username):
     members = getMembers()
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('''insert into tblJudoka(memberID, name, address, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
-    values('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');'''.format(members[-1][0] + 1, name, address,
-                                                                                  memphonenum,
-                                                                                  licnum, expdate, grade, lastgraddate,
-                                                                                  directdebactive, getUserId(username)))
+    cur.execute('''insert into tblJudoka(memberID, name, address, postcode, memphonenum, licnum, expdate, grade, lastgraddate, directdebactive, belongsTo)
+    values('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');'''.format(members[-1][0] + 1, name,
+                                                                                        address, postcode,
+                                                                                        memphonenum,
+                                                                                        licnum, expdate, grade,
+                                                                                        lastgraddate,
+                                                                                        directdebactive,
+                                                                                        getUserId(username)))
     con.commit()
 
 
@@ -252,7 +271,6 @@ def makePassword() -> string:
 
 
 def sendMail(email) -> bool:
-
     newPass = makePassword()
     print(newPass)
 
@@ -268,6 +286,26 @@ def sendMail(email) -> bool:
         return True
     else:
         return False
+
+
+def getPresent(date) -> list:
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute("""SELECT * FROM lnkMemAtt WHERE sessionID == '{}'""".format(date))
+    listOfHere = cur.fetchall()
+    return listOfHere
+
+
+def updHere(hereList):
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    for i in hereList:
+        cur.execute("""INSERT OR REPLACE INTO lnkMemAtt (memberID, sessionID, present) 
+        VALUES( 
+        '{}', 
+        '{}', 
+        '{}');""".format(i[0], i[2], i[1]))
+    con.commit()
 
 
 # Running if __name__ == __main__
