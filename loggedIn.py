@@ -114,7 +114,7 @@ class MainView(tk.Toplevel):
             l = tk.Checkbutton(tab4.scrollable_frame, variable=self.judoka[i])
             l.grid(row=i+1, column=1)
 
-        button = Button(tab4.scrollable_frame, text='Check', command=lambda: self.getHere())
+        button = Button(tab4.scrollable_frame, text='Register', command=lambda: self.getHere())
         button.grid(row=0, column=3)
 
         self.cal = DateEntry(tab4.scrollable_frame, width=12, bg='red', fg='white')

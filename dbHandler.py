@@ -301,10 +301,7 @@ def updHere(hereList):
     cur = con.cursor()
     for i in hereList:
         cur.execute("""INSERT OR REPLACE INTO lnkMemAtt (memberID, sessionID, present) 
-        VALUES( 
-        '{}', 
-        '{}', 
-        '{}');""".format(i[0], i[2], i[1]))
+        VALUES('{}', '{}', '{}');""".format(i[0], i[2], i[1]))
     con.commit()
 
 
