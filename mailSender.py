@@ -9,7 +9,6 @@ login = "test4collyers@gmail.com"
 
 
 def sendMail(recieverEmail, usrPass):
-    dayMessage = "15th"
     message = MIMEMultipart()
     message["Subject"] = "Keisen Judo password reset"
     message["From"] = login
@@ -18,7 +17,7 @@ def sendMail(recieverEmail, usrPass):
     # Create the HTML part of your email
 
     text = """\
-<!-- #######  YAY, I AM THE SOURCE EDITOR! #########-->
+<!-- #######  YAY, I AM THE SOURCE EDITOR! ######### -->
 <h1 style="color: #5e9ca0;" data-darkreader-inline-color=""><img src="https://i.imgur.com/eDBuaQ0.png" alt="" /></h1>
 <h1>Keisen Judo thanks you for using our tracker</h1>
 <h2 style="color: #5e9ca0;" data-darkreader-inline-color="">Your password has been reset:</h2>

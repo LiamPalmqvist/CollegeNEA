@@ -74,8 +74,8 @@ def main():
 
     cur.execute('''CREATE TABLE IF NOT EXISTS lnkMemAtt (
     memberID       INTEGER      NOT NULL,
-    present        INTEGER      NOT NULL,
     sessionID      INTEGER      NOT NULL,
+    present        INTEGER      NOT NULL,
     FOREIGN KEY (
         memberID
     )
@@ -99,9 +99,9 @@ def main():
     values  (0, '2021-05-13');''')
 
     cur.execute('''insert into tblMember(memberID, username, email, password, isAdmin, profilePhoto)
-    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'password', 1, 'LiamPalmqvist.png'),
-            (1, 'admin', 'admin@admin.com', 'password', 1, 'admin.png'),
-            (2, 'nonAdmin', 'nonadmin@admin.com', 'password', 0, 'nonAdmin.png');''')
+    values  (0, 'LiamPalmqvist', 'liam.palmqvist@icloud.com', 'adminPass', 1, 'LiamPalmqvist.png'),
+            (1, 'admin', 'admin@admin.com', 'adminPass', 1, 'admin.png'),
+            (2, 'nonAdmin', 'nonadmin@admin.com', 'default', 0, 'nonAdmin.png');''')
 
     cur.execute('''insert into lnkMemAtt(memberID, present, sessionID)
     values  (0, 0, 12-3-2000);''')
@@ -111,7 +111,7 @@ def main():
     signUpJudoka('Mia', 'Little Foxes, Hermitage Lane', 'RH19 4DR', '07507299554', '123456789', '2023-12-24', '2nd Mon',
                  '2020-12-22', 1, 'admin')
 
-    fake = Faker(['en_GB', 'ja_JP'])
+    fake = Faker('en_GB')
     for i in range(20):
         ran = ''.join(random.choices(string.digits, k=11))
         ran2 = ''.join(random.choices(string.digits, k=9))
@@ -271,19 +271,28 @@ def makePassword() -> string:
 
 
 def sendMail(email) -> bool:
-    newPass = makePassword()
-    print(newPass)
-
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute('''UPDATE tblMember
-    SET password = '{}'
-    WHERE email = '{}'
-    '''.format(newPass, email))
-    con.commit()
+    cur.execute("""SELECT * FROM tblMember WHERE email = '{}'""".format(email))
 
-    if mailSender.sendMail(email, newPass):
-        return True
+    if cur.fetchone() is not None:
+
+        newPass = makePassword()
+        print(newPass)
+
+        con = sqlite3.connect(db)
+        cur = con.cursor()
+        cur.execute('''UPDATE tblMember
+        SET password = '{}'
+        WHERE email = '{}'
+        '''.format(newPass, email))
+        con.commit()
+
+        if mailSender.sendMail(email, newPass):
+            return True
+        else:
+            return False
+
     else:
         return False
 
@@ -308,4 +317,5 @@ def updHere(hereList):
 # Running if __name__ == __main__
 if __name__ == '__main__':
     main()
-    makePassword()
+    makePassword() 
+    

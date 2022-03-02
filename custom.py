@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-### Custom entry class from stackoverflow
+### Custom entry class from StackOverflow
 class EntryWithPlaceholder(tk.Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey'):
         super().__init__(master)
@@ -59,6 +59,7 @@ class EntryWithPassword(tk.Entry):
             self.config(show='')
 
 
+# Custom scrollable frame class from StackOverflow
 class ScrollableFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
