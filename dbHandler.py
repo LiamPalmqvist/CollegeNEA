@@ -1,4 +1,6 @@
+import csv
 import sqlite3
+from tkinter.filedialog import asksaveasfile
 import loggedIn
 import string
 import secrets
@@ -115,7 +117,8 @@ def main():
     for i in range(20):
         ran = ''.join(random.choices(string.digits, k=11))
         ran2 = ''.join(random.choices(string.digits, k=9))
-        signUpJudoka(fake.name(), fake.address(), 'RH12 3BB', str(ran), str(ran2), fake.date(), '1st mon', fake.date(), random.randint(0, 1), 'admin')
+        signUpJudoka(fake.name(), fake.address(), 'RH12 3BB', str(ran), str(ran2), fake.date(), '1st mon', fake.date(),
+                     random.randint(0, 1), 'admin')
 
     cur.execute('SELECT * FROM tblMember')
     members = cur.fetchall()
@@ -314,8 +317,39 @@ def updHere(hereList):
     con.commit()
 
 
+def exportJudoka(date):
+    print("Exporting!")
+    files = [
+        ("All Files", '*.*'),
+        ("Comma-Separated Values", "*.csv"),
+        ("Text Document", "*.txt")
+    ]
+    file = asksaveasfile(filetypes=files, defaultextension="{}.csv".format(date))
+    print(file.name)
+
+    studentsHere = getPresent(date)
+    print(studentsHere)
+    allStudents = getJudoka(None)
+
+    presentList = [['','']]
+
+    for i in range(len(allStudents)):
+        if (allStudents[i][0] in studentsHere[i]) and (studentsHere[i][2] == 1):
+            presentList.append([allStudents[i][1], "1"])
+        else:
+            presentList.append([allStudents[i][1], "0"])
+
+    print(presentList)
+
+    with open(file.name, 'w', newline='') as f:
+        w = csv.writer(f)
+        f.writelines(date)
+        w.writerows(presentList)
+
+
+
+
 # Running if __name__ == __main__
 if __name__ == '__main__':
     main()
-    makePassword() 
-    
+    makePassword()

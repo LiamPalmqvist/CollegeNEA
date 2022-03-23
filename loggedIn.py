@@ -120,6 +120,9 @@ class MainView(tk.Toplevel):
         self.cal = DateEntry(tab4.scrollable_frame, width=12, bg='red', fg='white')
         self.cal.grid(row=0, column=4)
 
+        exportButton = Button(tab4.scrollable_frame, text="Export", command=lambda: dbHandler.exportJudoka(self.cal.get_date().strftime("%d-%m-%Y")))
+        exportButton.grid(row=1, column=3)
+
     def getHere(self) -> None:
         hereList = []
         judokas = dbHandler.getJudoka(None)
